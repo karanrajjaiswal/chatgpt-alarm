@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Small wrapper bootstrap so this source project can be built without bundling a binary wrapper JAR.
+set -euo pipefail
+VERSION="8.13"
+CACHE_ROOT="${GRADLE_USER_HOME:-$HOME/.gradle}/wrapper/dists/prabhat-gradle-${VERSION}"
+GRADLE_BIN="$(find "$CACHE_ROOT" -type f -path '*/bin/gradle' 2>/dev/null | head -n 1 || true)"
+if [[ -z "$GRADLE_BIN" ]]; then
+  mkdir -p "$CACHE_ROOT"
+  ZIP="$CACHE_ROOT/gradle-${VERSION}-bin.zip"
+  URL="https://services.gradle.org/distributions/gradle-${VERSION}-bin.zip"
+  echo "Downloading Gradle ${VERSION} (first build only)..."
+  if command -v curl >/dev/null 2>&1; then curl -fL "$URL" -o "$ZIP"
+  elif command -v wget >/dev/null 2>&1; then wget -O "$ZIP" "$URL"
+  else echo "Please install curl or wget, then retry." >&2; exit 2; fi
+  unzip -q -o "$ZIP" -d "$CACHE_ROOT"
+  GRADLE_BIN="$CACHE_ROOT/gradle-${VERSION}/bin/gradle"
+fi
+exec "$GRADLE_BIN" "$@"

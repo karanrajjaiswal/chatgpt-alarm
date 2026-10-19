@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Prabhat Alarm</string>
+    <string name="notification_channel_name">Wake-up alarms</string>
+    <string name="notification_channel_description">Time-sensitive alarm notifications and lock-screen alarm controls.</string>
+</resources>
